@@ -3,10 +3,30 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PageController;
 
+
+
+
 Route::get('/', [PageController::class, 'index'])->name('home');
-Route::get('/about', [PageController::class, 'about'])->name('about');
-Route::get('/project-idea', [PageController::class, 'project'])->name('project');
-Route::get('/calculator', [PageController::class, 'calculator'])->name('calculator');
-Route::get('/hitung/{angka1}/{angka2}/{operasi}', [PageController::class, 'hitung'])->name('hitung');
 
 
+Route::get('/mahasiswa/{nrp}', [PageController::class, 'mahasiswa'])
+    ->where('nrp', '^[0-9]{10}$')
+    ->name('mahasiswa.detail');
+
+
+Route::get('/agent/{tema?}', [PageController::class, 'agent'])->name('agent');
+
+Route::get('/hitung-ipk/{ip1}/{ip2}', [PageController::class, 'hitungIpk'])->name('hitung.ipk');
+
+Route::prefix('dashboard')->group(function () {
+    Route::get('/', [PageController::class, 'index'])->name('dashboard.index');
+    Route::get('/mahasiswa/{nrp}', [PageController::class, 'mahasiswa'])
+        ->where('nrp', '^[0-9]{10}$')
+        ->name('dashboard.mahasiswa');
+    Route::get('/hitung-ipk/{ip1}/{ip2}', [PageController::class, 'hitungIpk'])
+        ->name('dashboard.hitung.ipk');
+    Route::get('/agent/{tema?}', [PageController::class, 'agent'])
+        ->name('dashboard.agent');
+});
+
+Route::fallback([PageController::class, 'fallback'])->name('fallback');

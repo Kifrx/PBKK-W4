@@ -7,94 +7,117 @@ use Illuminate\Http\Request;
 class PageController extends Controller
 {
     /**
-     * Halaman Beranda (Home)
+     * Data Mahasiswa  (Syah Amin Zikri - 5025241197)
+     */
+    private function getMahasiswaData()
+    {
+        return [
+            'nama' => 'Syah Amin Zikri',
+            'nrp' => '5025241197',
+            'prodi' => 'Teknik Informatika S1',
+            'departemen' => 'Departemen Teknik Informatika',
+            'fakultas' => 'FTEIC ITS',
+            'angkatan' => '2024',
+            'status' => 'Mahasiswa Aktif ITS',
+            'ipk_proyeksi' => 3.92,
+            'email' => '5025241197@student.its.ac.id',
+            'peran_tim' => 'Full-Stack Developer',
+            'bio' => 'Mahasiswa Teknik Informatika ITS angkatan 2024 yang berfokus pada pengembangan Intelligent Agentic AI Systems dan Arsitektur Web Modern.',
+            'matkul' => ['Pemrograman Berbasis Kerangka Kerja (PBKK)', 'Data Mining', 'RSBP', 'Keamanan Informasi', 'GRAFKOM'],
+        ];
+    }
+
+    /**
+     * Rute 1: Halaman Home (/)
      */
     public function index()
     {
-        $anggota = [
-            ['nama' => 'Aziz Adi Pramana', 'nrp' => '5025241195'],
-            ['nama' => 'Syah Amin Zikri', 'nrp' => '5025241197'],
-            ['nama' => 'Muhammad Solihuddin Rizky', 'nrp' => '5025241171'],
-            ['nama' => 'Ananda Aryasatya Zhafran Aqila', 'nrp' => '5025241142'],
-            ['nama' => 'Rafi Attar Maulana', 'nrp' => '5025241141'],
-            ['nama' => 'Abdurrahman Ar-Rafi Ravsan Zarnadi', 'nrp' => '5025241241'],
-        ];
+        $mhsUtama = $this->getMahasiswaData();
 
-        return view('home', compact('anggota'));
-    }
-
-
-    /**
-     * Halaman Profil Jurusan (About)
-     */
-    public function about()
-    {
-        return view('about');
+        return view('home', [
+            'mhsUtama' => $mhsUtama,
+        ]);
     }
 
     /**
-     * Halaman Rencana Proyek Akhir (Project Idea)
+     * Rute 2: Detail Profil (/mahasiswa/{nrp}) - Protected by 10-digit regex
      */
-    public function project()
+    public function mahasiswa($nrp)
     {
-        return view('project');
-    }
+        $mhsUtama = $this->getMahasiswaData();
 
-    /**
-     * Halaman Kalkulator Interaktif
-     */
-    public function calculator()
-    {
-        return view('calculator');
-    }
-
-    /**
-     * Route: /hitung/{angka1}/{angka2}/{operasi}
-     */
-    public function hitung($angka1, $angka2, $operasi)
-    {
-        $num1 = is_numeric($angka1) ? (float)$angka1 : 0;
-        $num2 = is_numeric($angka2) ? (float)$angka2 : 0;
-        $op = strtolower($operasi);
-        $hasil = null;
-        $pesanHasil = '';
-        $simbol = '';
-        $error = null;
-
-        switch ($op) {
-            case 'tambah':
-                $hasil = $num1 + $num2;
-                $simbol = '+';
-                $pesanHasil = "Hasil dari {$num1} tambah {$num2} adalah {$hasil}";
-                break;
-            case 'kurang':
-                $hasil = $num1 - $num2;
-                $simbol = '-';
-                $pesanHasil = "Hasil dari {$num1} kurang {$num2} adalah {$hasil}";
-                break;
-            case 'kali':
-                $hasil = $num1 * $num2;
-                $simbol = '×';
-                $pesanHasil = "Hasil dari {$num1} kali {$num2} adalah {$hasil}";
-                break;
-            case 'bagi':
-                if ($num2 == 0) {
-                    $error = "Pembagian dengan angka 0 (nol) tidak diperbolehkan.";
-                    $pesanHasil = "Error: Pembagian dengan 0!";
-                } else {
-                    $hasil = $num1 / $num2;
-                    $simbol = '÷';
-                    $pesanHasil = "Hasil dari {$num1} bagi {$num2} adalah {$hasil}";
-                }
-                break;
-            default:
-                $error = "Operasi '{$operasi}' tidak dikenali. Gunakan: tambah, kurang, kali, atau bagi.";
-                $pesanHasil = "Error: Operasi tidak valid!";
-                break;
+        if ($nrp === '5025241197') {
+            $mhs = $mhsUtama;
+        } else {
+            // Dynamic fallback for any valid 10-digit ITS NRP
+            $mhs = [
+                'nama' => 'Mahasiswa ITS (NRP ' . $nrp . ')',
+                'nrp' => $nrp,
+                'prodi' => 'Teknik Informatika S1',
+                'departemen' => 'Departemen Teknik Informatika',
+                'fakultas' => 'FTEIC ITS',
+                'angkatan' => '20' . substr($nrp, 4, 2),
+                'status' => 'Mahasiswa Aktif ITS',
+                'ipk_proyeksi' => 3.75,
+                'email' => 'mhs.' . $nrp . '@student.its.ac.id',
+                'peran_tim' => 'Sivitas Akademika ITS',
+                'bio' => 'Mahasiswa terdaftar resmi di Institut Teknologi Sepuluh Nopember (ITS) Surabaya.',
+                'matkul' => ['Pemrograman Berbasis Kerangka Kerja', 'Struktur Data', 'Kecerdasan Artifisial'],
+            ];
         }
 
-        return view('calculator', compact('num1', 'num2', 'op', 'hasil', 'pesanHasil', 'simbol', 'error', 'angka1', 'angka2', 'operasi'));
+        return view('mahasiswa', compact('mhs', 'nrp'));
+    }
+
+    /**
+     * Rute 3: Ide Platform Agentic AI (/agent/{tema?})
+     */
+    public function agent($tema = null)
+    {
+        $hasTema = !empty($tema);
+        $temaAktif = $hasTema ? urldecode($tema) : 'General Assistant Agent';
+
+        return view('project', [
+            'tema' => $temaAktif,
+            'hasTema' => $hasTema,
+        ]);
+    }
+
+    /**
+     * Tantangan 2: Kalkulator Portofolio Akademis (/hitung-ipk/{ip1}/{ip2})
+     */
+    public function hitungIpk($ip1, $ip2)
+    {
+        $val1 = is_numeric($ip1) ? (float)$ip1 : 0.0;
+        $val2 = is_numeric($ip2) ? (float)$ip2 : 0.0;
+
+        $total = $val1 + $val2;
+        $ipk = round($total / 2, 2);
+
+        if ($ipk >= 3.75) {
+            $predikat = 'Dengan Pujian (Cumlaude)';
+            $badgeColor = 'success';
+        } elseif ($ipk >= 3.50) {
+            $predikat = 'Sangat Memuaskan';
+            $badgeColor = 'primary';
+        } elseif ($ipk >= 3.00) {
+            $predikat = 'Memuaskan';
+            $badgeColor = 'info';
+        } else {
+            $predikat = 'Cukup';
+            $badgeColor = 'warning';
+        }
+
+        return view('ipk', compact('val1', 'val2', 'total', 'ipk', 'predikat', 'badgeColor', 'ip1', 'ip2'));
+    }
+
+
+
+    /**
+     * Tantangan 3: Fallback Route for 404 handling
+     */
+    public function fallback()
+    {
+        return response()->view('fallback', [], 404);
     }
 }
-
-

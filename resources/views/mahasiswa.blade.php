@@ -1,0 +1,133 @@
+@extends('layouts.app')
+@section('title', 'Profil Mahasiswa — ' . $mhs['nama'])
+@section('content')
+
+{{-- ═══ HERO — warm yellow ═══ --}}
+<div class="hero-block" style="background: var(--yellow);">
+    <div class="wrap">
+        <div class="pill pill-white-strong mb-5">
+            <i class="bi bi-person-badge-fill"></i> Profil Mahasiswa ITS
+        </div>
+
+        <div style="display: flex; align-items: flex-end; gap: var(--s6); flex-wrap: wrap;">
+            <div class="avatar" style="background: var(--ink); color: var(--yellow); width: 100px; height: 100px; font-size: 2.2rem; border-radius: var(--r-xl);">
+                SZ
+            </div>
+            <div>
+                <h1 class="t-hero" style="color: var(--ink); margin-bottom: var(--s2);">{{ $mhs['nama'] }}</h1>
+                <p style="color: rgba(26,26,18,0.60); font-size: 0.95rem; margin-bottom: var(--s3);">
+                    {{ $mhs['prodi'] }} &middot; {{ $mhs['departemen'] }}
+                </p>
+                <div style="display: flex; flex-wrap: wrap; gap: var(--s2);">
+                    <span class="chip ink"><i class="bi bi-hash"></i> {{ $mhs['nrp'] }}</span>
+                    <span class="chip ink"><i class="bi bi-check-circle-fill" style="color: var(--lime);"></i> {{ $mhs['status'] }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- ═══ CONTENT — two column ═══ --}}
+<div style="background: var(--cream); padding: var(--s16) 0;">
+    <div class="wrap">
+        <div class="row g-5">
+
+            {{-- LEFT: stat card --}}
+            <div class="col-12 col-lg-4">
+                <div class="card card-p" style="display: flex; flex-direction: column; gap: var(--s6);">
+
+                    {{-- Big IPK --}}
+                    <div style="text-align: center; padding: var(--s6) 0;">
+                        <div class="t-label mb-2" style="color: var(--ink-soft);">IPK Proyeksi</div>
+                        <div class="t-stat" style="color: var(--ink);">{{ $mhs['ipk_proyeksi'] }}</div>
+                        <div style="margin-top: var(--s3);">
+                            <span class="chip lime"><i class="bi bi-award-fill"></i> Dengan Pujian</span>
+                        </div>
+                    </div>
+
+                    <hr class="divider" style="margin: 0;">
+
+                    {{-- Info blocks --}}
+                    <div style="display: flex; flex-direction: column; gap: var(--s3);">
+                        <div class="info-block">
+                            <div class="info-label">Fokus Pengembangan</div>
+                            <div class="info-value"><i class="bi bi-star-fill" style="color: var(--orange); font-size: 11px;"></i> {{ $mhs['peran_tim'] }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Email Mahasiswa</div>
+                            <div class="info-value" style="font-size: 0.78rem; word-break: break-all;">{{ $mhs['email'] }}</div>
+                        </div>
+                        <div class="info-block">
+                            <div class="info-label">Angkatan</div>
+                            <div class="info-value">{{ $mhs['angkatan'] }}</div>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('home') }}" class="btn btn-outline-ink btn-full">
+                        <i class="bi bi-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
+
+            {{-- RIGHT: details --}}
+            <div class="col-12 col-lg-8">
+                <div class="card card-p" style="display: flex; flex-direction: column; gap: var(--s8);">
+
+                    {{-- Academic info --}}
+                    <div>
+                        <div style="display: flex; align-items: center; gap: var(--s3); margin-bottom: var(--s5);">
+                            <div class="icon-box lime" style="width: 36px; height: 36px; font-size: 15px;"><i class="bi bi-journal-text"></i></div>
+                            <h2 class="t-subhead">Informasi Akademis</h2>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="info-block">
+                                    <div class="info-label">Departemen</div>
+                                    <div class="info-value">{{ $mhs['departemen'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-block">
+                                    <div class="info-label">Angkatan</div>
+                                    <div class="info-value">{{ $mhs['angkatan'] }}</div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="info-block">
+                                    <div class="info-label">Fakultas</div>
+                                    <div class="info-value">{{ $mhs['fakultas'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="divider" style="margin: 0;">
+
+                    {{-- Bio --}}
+                    <div>
+                        <div class="t-label mb-3">Biografi</div>
+                        <p class="t-body-lg">{{ $mhs['bio'] }}</p>
+                    </div>
+
+                    <hr class="divider" style="margin: 0;">
+
+                    {{-- Matkul --}}
+                    <div>
+                        <div class="t-label mb-3">Mata Kuliah Semester Ini</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: var(--s2);">
+                            @foreach($mhs['matkul'] as $mk)
+                                <span class="tag">
+                                    <i class="bi bi-book" style="color: var(--lime); font-size: 11px;"></i> {{ $mk }}
+                                </span>
+                            @endforeach
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@endsection

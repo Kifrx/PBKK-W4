@@ -1,61 +1,129 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎓 ITS Academic Portal & Agentic AI
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+---
 
-## About Laravel
+## Fitur Utama & Rute Aplikasi
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Aplikasi ini dibangun menggunakan framework **Laravel 11** dengan menerapkan arsitektur _Model-View-Controller (MVC)_, _Named Routes_, _Route Constraints_, serta desain UI modern bergaya editorial.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+| No  | Fitur / Rute           | URL Path                  | Nama Rute (`named route`) | Keterangan                                                              |
+| :-: | :--------------------- | :------------------------ | :------------------------ | :---------------------------------------------------------------------- |
+|  1  | **Home / Beranda**     | `/`                       | `home`                    | Halaman beranda portal akademis                                         |
+|  2  | **Profil Mahasiswa**   | `/mahasiswa/{nrp}`        | `mahasiswa.detail`        | Parameter **Wajib** dengan Validasi Regex (10 Digit NRP)                |
+|  3  | **Agentic AI Sandbox** | `/agent/{tema?}`          | `agent`                   | Parameter **Opsional** dengan fallback tema default                     |
+|  4  | **Kalkulator IPK**     | `/hitung-ipk/{ip1}/{ip2}` | `hitung.ipk`              | Menghitung rata-rata IPK & predikat kelulusan                           |
+|  5  | **Dashboard Grouping** | `/dashboard/*`            | `dashboard.*`             | Route Prefix Grouping (`/dashboard`, `/dashboard/mahasiswa/{nrp}`, dll) |
+|  6  | **Fallback 404**       | `*`                       | `fallback`                | Menangani halaman tidak ditemukan dengan tampilan HTTP 404 khusus       |
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## Panduan Instalasi & Cara Menjalankan di Lokal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di komputer lokal Anda:
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+### 1. Prasyarat Sistem
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Pastikan perangkat Anda sudah terinstall:
 
-## Laravel Sponsors
+-   **PHP** (v8.2 atau yang lebih baru)
+-   **Composer**
+-   **Git**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 2. Clone Repository
 
-### Premium Partners
+Buka terminal / Command Prompt / PowerShell, lalu jalankan:
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+```bash
+git clone https://github.com/Kifrx/tugas1-pbkk.git
+cd tugas1-pbkk
+```
 
-## Contributing
+### 3. Install Dependency Laravel
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Jalankan composer untuk mengunduh semua paket dependency:
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 4. Salin File Konfigurasi Environment (`.env`)
 
-## Security Vulnerabilities
+Salin file `.env.example` menjadi `.env`:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+-   **Windows (PowerShell):**
+    ```powershell
+    copy .env.example .env
+    ```
+-   **Linux / macOS / Git Bash:**
+    ```bash
+    cp .env.example .env
+    ```
 
-## License
+### 5. Generate Application Key
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Buat kunci enkripsi aplikasi Laravel:
+
+```bash
+php artisan key:generate
+```
+
+### 6. Jalankan Local Development Server
+
+Jalankan server lokal Laravel menggunakan Artisan:
+
+```bash
+php artisan serve
+```
+
+> 💡 **Opsi Tambahan:** Jika Anda tidak ingin fitur auto-reload (atau ingin menggunakan CLI workers):
+>
+> ```bash
+> php artisan serve --no-reload
+> ```
+
+### 7. Buka di Browser
+
+Akses aplikasi melalui browser di URL:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+## 🧪 Contoh URL Uji Coba
+
+Setelah server berjalan, Anda dapat mencoba URL berikut:
+
+-   **Home:** [`http://127.0.0.1:8000/`](http://127.0.0.1:8000/)
+-   **Detail Mahasiswa (Valid 10 Digit):** [`http://127.0.0.1:8000/mahasiswa/5025241197`](http://127.0.0.1:8000/mahasiswa/5025241197)
+-   **Detail Mahasiswa (Uji Regex - Otomatis 404 jika bukan 10 digit):** [`http://127.0.0.1:8000/mahasiswa/123`](http://127.0.0.1:8000/mahasiswa/123)
+-   **Agent AI (Dengan Parameter):** [`http://127.0.0.1:8000/agent/Cybersecurity`](http://127.0.0.1:8000/agent/Cybersecurity)
+-   **Agent AI (Tanpa Parameter / Opsional):** [`http://127.0.0.1:8000/agent`](http://127.0.0.1:8000/agent)
+-   **Kalkulator IPK:** [`http://127.0.0.1:8000/hitung-ipk/3.95/3.88`](http://127.0.0.1:8000/hitung-ipk/3.95/3.88)
+-   **Dashboard Group:** [`http://127.0.0.1:8000/dashboard`](http://127.0.0.1:8000/dashboard)
+-   **Testing Fallback 404:** [`http://127.0.0.1:8000/halaman-ngawur`](http://127.0.0.1:8000/halaman-ngawur)
+
+---
+
+## 📁 Struktur Direktori Penting
+
+```text
+tugas1-pbkk/
+├── app/
+│   └── Http/
+│       └── Controllers/
+│           └── PageController.php   # Logika bisnis & pemrosesan rute
+├── resources/
+│   └── views/
+│       ├── layouts/
+│       │   └── app.blade.php        # Layout utama (Header, Nav, Footer)
+│       ├── home.blade.php           # Tampilan Beranda
+│       ├── mahasiswa.blade.php      # Tampilan Profil Mahasiswa
+│       ├── project.blade.php        # Tampilan Agentic AI Sandbox
+│       ├── ipk.blade.php            # Tampilan Kalkulator IPK
+│       └── fallback.blade.php       # Tampilan Halaman 404
+├── routes/
+│   └── web.php                      # Pendaftaran Rute Aplikasi
+└── README.md                        # Dokumentasi Proyek
+```
