@@ -10,9 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <!-- Clash-style: Space Grotesk for display, DM Sans for body -->
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
 
     <style>
         /* ══════════════════════════════════════════════════════════
@@ -925,15 +923,15 @@
 
             <!-- Nav links -->
             <ul class="nav-links" id="navLinks">
-                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">
+                <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home', 'beranda') ? 'active' : '' }}">
                     <i class="bi bi-house"></i> Home
                 </a></li>
-                <li><a href="{{ route('mahasiswa.detail', ['nrp' => '5025241197']) }}"
-                       class="{{ request()->routeIs('mahasiswa.detail', 'dashboard.mahasiswa') ? 'active' : '' }}">
+                <li><a href="{{ route('profil.mahasiswa') }}"
+                       class="{{ request()->routeIs('profil.mahasiswa', 'mahasiswa.detail', 'dashboard.mahasiswa') ? 'active' : '' }}">
                     <i class="bi bi-person"></i> Profil
                 </a></li>
-                <li><a href="{{ route('agent') }}"
-                       class="{{ request()->routeIs('agent', 'dashboard.agent') ? 'active' : '' }}">
+                <li><a href="{{ route('ide.agent') }}"
+                       class="{{ request()->routeIs('ide.agent', 'agent', 'dashboard.agent') ? 'active' : '' }}">
                     <i class="bi bi-cpu"></i> Agentic AI
                 </a></li>
                 <li><a href="{{ route('hitung.ipk', ['ip1' => 3.85, 'ip2' => 3.90]) }}"
@@ -972,7 +970,6 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const navToggle = document.getElementById('navToggle');
         const navLinks  = document.getElementById('navLinks');

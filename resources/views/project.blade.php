@@ -2,12 +2,73 @@
 @section('title', 'Platform Agentic AI — Syah Amin Zikri')
 @section('content')
 
-{{-- ═══ HERO — coral/orange ═══ --}}
-<div class="hero-block" style="background: var(--coral);">
+@php
+    $darkMode = request('mode') === 'dark' || (isset($darkMode) && $darkMode);
+@endphp
+
+@if($darkMode)
+<style>
+    .theme-dark {
+        background-color: #121316 !important;
+        color: #e2e8f0 !important;
+    }
+    .theme-dark .hero-block {
+        background: #181A20 !important;
+        border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .theme-dark div[style*="background: var(--white)"],
+    .theme-dark div[style*="background: var(--cream)"] {
+        background: #121316 !important;
+    }
+    .theme-dark .card,
+    .theme-dark .step-card {
+        background: #1c1f26 !important;
+        border-color: rgba(255,255,255,0.1) !important;
+        color: #f1f5f9 !important;
+    }
+    .theme-dark .t-heading,
+    .theme-dark .t-subhead,
+    .theme-dark h1,
+    .theme-dark h2,
+    .theme-dark h3,
+    .theme-dark h4 {
+        color: #f8fafc !important;
+    }
+    .theme-dark .t-body,
+    .theme-dark .t-body-lg,
+    .theme-dark p {
+        color: #94a3b8 !important;
+    }
+    .theme-dark .pill-white-strong {
+        background: rgba(255,255,255,0.12) !important;
+        color: #f8fafc !important;
+        border-color: rgba(255,255,255,0.15) !important;
+    }
+</style>
+@endif
+
+<div class="{{ $darkMode ? 'theme-dark' : 'theme-light' }}">
+
+{{-- ═══ HERO — coral/orange (or dark in dark mode) ═══ --}}
+<div class="hero-block" style="background: {{ $darkMode ? '#181A20' : 'var(--coral)' }};">
     <div class="wrap">
-        <div class="pill pill-white-strong mb-5">
-            <i class="bi bi-cpu-fill"></i> Agentic AI Platform
-            @if($hasTema) · <span style="opacity:.7;">{{ $tema }}</span> @endif
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s3); margin-bottom: var(--s5);">
+            <div class="pill pill-white-strong">
+                <i class="bi bi-cpu-fill"></i> Agentic AI Platform
+                @if($hasTema) · <span style="opacity:.7;">{{ $tema }}</span> @endif
+            </div>
+
+            <div>
+                @if($darkMode)
+                    <a href="{{ request()->fullUrlWithQuery(['mode' => null]) }}" class="btn btn-sm btn-white" style="font-size: 0.8rem;">
+                        <i class="bi bi-sun-fill" style="color: var(--orange);"></i> Mode Normal
+                    </a>
+                @else
+                    <a href="{{ request()->fullUrlWithQuery(['mode' => 'dark']) }}" class="btn btn-sm btn-ink" style="font-size: 0.8rem;">
+                        <i class="bi bi-moon-stars-fill"></i> Mode Dark
+                    </a>
+                @endif
+            </div>
         </div>
 
         <h1 class="t-display mb-5" style="color: var(--white); max-width: 700px;">
@@ -27,6 +88,7 @@
         </p>
     </div>
 </div>
+
 
 {{-- ═══ CONTENT ═══ --}}
 @if($hasTema)
@@ -112,8 +174,87 @@
         </div>
     </div>
 
+    {{-- ═══ FORMULIR IDE AGENT (INTERAKTIF) ═══ --}}
+    <div style="background: var(--cream); padding: var(--s16) 0; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border);">
+        <div class="wrap">
+            <div style="max-width: 860px; margin: 0 auto;">
+                <div class="pill pill-coral mb-3"><i class="bi bi-lightbulb-fill"></i> Formulir Ide Agent</div>
+                <h2 class="t-heading mb-4">Ajukan / Eksplorasi Ide Agent Baru</h2>
+
+                @if(request()->filled('nama_ide'))
+                    <x-status-banner type="success" title="Ide Berhasil Diajukan!" icon="bi bi-check-circle-fill">
+                        Ide agent <strong>"{{ request('nama_ide') }}"</strong> pada kategori <strong>{{ request('kategori', 'General') }}</strong> telah berhasil didaftarkan ke sistem!
+                    </x-status-banner>
+                @endif
+
+                <form action="{{ url()->current() }}" method="GET" class="card card-p" style="margin-top: var(--s5);">
+                    @if(request('mode') === 'dark')
+                        <input type="hidden" name="mode" value="dark">
+                    @endif
+
+                    <div class="row g-4">
+                        <div class="col-12 col-md-6">
+                            <label for="namaIde" class="info-label" style="display: block; margin-bottom: 6px; font-weight: 700;">
+                                Nama Ide Agent
+                            </label>
+                            <input type="text" 
+                                   id="namaIde" 
+                                   name="nama_ide" 
+                                   value="{{ request('nama_ide') }}" 
+                                   class="form-control" 
+                                   placeholder="Contoh: Academic Research Copilot" 
+                                   required 
+                                   style="padding: 10px 14px; border-color: var(--color-border);">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="kategoriIde" class="info-label" style="display: block; margin-bottom: 6px; font-weight: 700;">
+                                Kategori Bidang Agent
+                            </label>
+                            <select id="kategoriIde" name="kategori" class="form-select" style="padding: 10px 14px; border-color: var(--color-border);">
+                                <option value="Career & Job Matching" {{ request('kategori') == 'Career & Job Matching' ? 'selected' : '' }}>Career & Job Matching</option>
+                                <option value="Academic Advisory" {{ request('kategori') == 'Academic Advisory' ? 'selected' : '' }}>Academic Advisory</option>
+                                <option value="Smart Automation" {{ request('kategori') == 'Smart Automation' ? 'selected' : '' }}>Smart Automation</option>
+                                <option value="Data & Code Analysis" {{ request('kategori') == 'Data & Code Analysis' ? 'selected' : '' }}>Data & Code Analysis</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label for="deskripsiIde" class="info-label" style="display: block; margin-bottom: 6px; font-weight: 700;">
+                                Deskripsi Singkat Konsep
+                            </label>
+                            <textarea id="deskripsiIde" 
+                                      name="deskripsi" 
+                                      rows="3" 
+                                      class="form-control" 
+                                      placeholder="Jelaskan peran agent dan bagaimana AI membantu pengguna..." 
+                                      style="border-color: var(--color-border);">{{ request('deskripsi') }}</textarea>
+                        </div>
+
+                        <div class="col-12 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div class="t-small" style="color: var(--ink-soft);">
+                                Status mode aktif: <strong>{{ $darkMode ? 'Dark Theme' : 'Light Theme' }}</strong>
+                            </div>
+                            <div class="d-flex gap-2">
+                                @if(request()->filled('nama_ide'))
+                                    <a href="{{ request()->fullUrlWithQuery(['nama_ide' => null, 'kategori' => null, 'deskripsi' => null]) }}" class="btn btn-outline-ink btn-sm">
+                                        <i class="bi bi-x-circle"></i> Reset Form
+                                    </a>
+                                @endif
+                                <button type="submit" class="btn btn-yellow">
+                                    <i class="bi bi-send-fill"></i> Kirim Ide Agent
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     {{-- CTA — cream bg, dark block --}}
     <div style="background: var(--cream); padding: 0 0 var(--s16);">
+
         <div class="wrap" style="padding-top: var(--s8);">
             <div class="cta-block">
                 <div style="position: relative; z-index: 1; max-width: 480px;">
@@ -151,4 +292,7 @@
 
 @endif
 
+</div>
+
 @endsection
+

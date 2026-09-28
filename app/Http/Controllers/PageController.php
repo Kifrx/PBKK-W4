@@ -28,19 +28,69 @@ class PageController extends Controller
     }
 
     /**
-     * Rute 1: Halaman Home (/)
+     * Rute 1: Halaman Home (/) & Tantangan 2: Alert Status Interaktif (/beranda?user=...)
      */
-    public function index()
+    public function index(Request $request)
     {
         $mhsUtama = $this->getMahasiswaData();
+        $user = $request->query('user');
+
+        if (!empty($user)) {
+            $displayNama = trim($user);
+            // Random IPK antara 3.50 dan 4.00
+            $randomGpa = mt_rand(350, 400) / 100;
+            $displayGpa = number_format($randomGpa, 2);
+        } else {
+            $displayNama = $mhsUtama['nama'];
+            $displayGpa = number_format($mhsUtama['ipk_proyeksi'], 2);
+        }
+
+        $ipkNum = (float) $displayGpa;
+        if ($ipkNum >= 3.75) {
+            $predikatGpa = 'Dengan Pujian';
+            $badgeColor = 'lime';
+        } else {
+            $predikatGpa = 'Sangat Memuaskan';
+            $badgeColor = 'yellow';
+        }
+
+        $progressPct = min(100, round(($ipkNum / 4.00) * 100));
 
         return view('home', [
             'mhsUtama' => $mhsUtama,
+            'user' => $user,
+            'displayNama' => $displayNama,
+            'displayGpa' => $displayGpa,
+            'predikatGpa' => $predikatGpa,
+            'badgeColor' => $badgeColor,
+            'progressPct' => $progressPct,
         ]);
     }
 
     /**
-     * Rute 2: Detail Profil (/mahasiswa/{nrp}) - Protected by 10-digit regex
+     * Rute 2: Halaman Profil Mahasiswa (/profil-mahasiswa)
+     */
+    public function profilMahasiswa()
+    {
+        return $this->mahasiswa('5025241197');
+    }
+
+    /**
+     * Rute 3: Halaman Ide Agent (/ide-agent) & Tantangan 1: Dynamic Theme (?mode=dark)
+     */
+    public function ideAgent(Request $request)
+    {
+        $darkMode = $request->query('mode') === 'dark';
+
+        return view('project', [
+            'tema' => 'Career Application Agent',
+            'hasTema' => true,
+            'darkMode' => $darkMode,
+        ]);
+    }
+
+    /**
+     * Rute 2 Detail: Detail Profil (/mahasiswa/{nrp}) - Protected by 10-digit regex
      */
     public function mahasiswa($nrp)
     {
@@ -70,16 +120,18 @@ class PageController extends Controller
     }
 
     /**
-     * Rute 3: Ide Platform Agentic AI (/agent/{tema?})
+     * Rute: Ide Platform Agentic AI (/agent/{tema?})
      */
-    public function agent($tema = null)
+    public function agent(Request $request, $tema = null)
     {
         $hasTema = !empty($tema);
         $temaAktif = $hasTema ? urldecode($tema) : 'General Assistant Agent';
+        $darkMode = $request->query('mode') === 'dark';
 
         return view('project', [
             'tema' => $temaAktif,
             'hasTema' => $hasTema,
+            'darkMode' => $darkMode,
         ]);
     }
 

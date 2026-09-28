@@ -30,6 +30,10 @@
 {{-- ═══ CONTENT — two column ═══ --}}
 <div style="background: var(--cream); padding: var(--s16) 0;">
     <div class="wrap">
+        <x-status-banner type="primary" title="Status Akademik Mahasiswa Aktif" icon="bi bi-patch-check-fill">
+            Status mahasiswa terverifikasi aktif pada semester berjalan di Sistem Informasi Akademik ITS.
+        </x-status-banner>
+
         <div class="row g-5">
 
             {{-- LEFT: stat card --}}
@@ -47,20 +51,12 @@
 
                     <hr class="divider" style="margin: 0;">
 
-                    {{-- Info blocks --}}
+                    {{-- Info blocks using <x-info-card> --}}
                     <div style="display: flex; flex-direction: column; gap: var(--s3);">
-                        <div class="info-block">
-                            <div class="info-label">Fokus Pengembangan</div>
-                            <div class="info-value"><i class="bi bi-star-fill" style="color: var(--orange); font-size: 11px;"></i> {{ $mhs['peran_tim'] }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Email Mahasiswa</div>
-                            <div class="info-value" style="font-size: 0.78rem; word-break: break-all;">{{ $mhs['email'] }}</div>
-                        </div>
-                        <div class="info-block">
-                            <div class="info-label">Angkatan</div>
-                            <div class="info-value">{{ $mhs['angkatan'] }}</div>
-                        </div>
+                        <x-info-card label="Fokus Pengembangan" :value="$mhs['peran_tim']" icon="bi bi-star-fill" />
+                        <x-info-card label="Email Mahasiswa" :value="$mhs['email']" icon="bi bi-envelope-fill" />
+                        <x-info-card label="Departemen / Fakultas" :value="$mhs['departemen'] . ' · ' . $mhs['fakultas']" icon="bi bi-geo-alt-fill" />
+                        <x-info-card label="Angkatan" :value="$mhs['angkatan']" icon="bi bi-calendar-event" />
                     </div>
 
                     <a href="{{ route('home') }}" class="btn btn-outline-ink btn-full">
@@ -73,7 +69,7 @@
             <div class="col-12 col-lg-8">
                 <div class="card card-p" style="display: flex; flex-direction: column; gap: var(--s8);">
 
-                    {{-- Academic info --}}
+                    {{-- Academic info using <x-info-card> --}}
                     <div>
                         <div style="display: flex; align-items: center; gap: var(--s3); margin-bottom: var(--s5);">
                             <div class="icon-box lime" style="width: 36px; height: 36px; font-size: 15px;"><i class="bi bi-journal-text"></i></div>
@@ -81,22 +77,13 @@
                         </div>
                         <div class="row g-3">
                             <div class="col-6">
-                                <div class="info-block">
-                                    <div class="info-label">Departemen</div>
-                                    <div class="info-value">{{ $mhs['departemen'] }}</div>
-                                </div>
+                                <x-info-card label="Departemen" :value="$mhs['departemen']" icon="bi bi-building" />
                             </div>
                             <div class="col-6">
-                                <div class="info-block">
-                                    <div class="info-label">Angkatan</div>
-                                    <div class="info-value">{{ $mhs['angkatan'] }}</div>
-                                </div>
+                                <x-info-card label="Angkatan" :value="$mhs['angkatan']" icon="bi bi-calendar-check" />
                             </div>
                             <div class="col-12">
-                                <div class="info-block">
-                                    <div class="info-label">Fakultas</div>
-                                    <div class="info-value">{{ $mhs['fakultas'] }}</div>
-                                </div>
+                                <x-info-card label="Fakultas" :value="$mhs['fakultas']" icon="bi bi-mortarboard" />
                             </div>
                         </div>
                     </div>

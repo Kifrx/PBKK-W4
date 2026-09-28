@@ -1,129 +1,143 @@
-# 🎓 ITS Academic Portal & Agentic AI
+# ITS Academic Portal & Agentic AI
 
 ---
 
-## Fitur Utama & Rute Aplikasi
+## 🚀 Fitur Utama & Daftar Rute
 
-Aplikasi ini dibangun menggunakan framework **Laravel 11** dengan menerapkan arsitektur _Model-View-Controller (MVC)_, _Named Routes_, _Route Constraints_, serta desain UI modern bergaya editorial.
+Aplikasi dikelola secara terpusat oleh satu controller: `app/Http/Controllers/PageController.php`.
 
-| No  | Fitur / Rute           | URL Path                  | Nama Rute (`named route`) | Keterangan                                                              |
-| :-: | :--------------------- | :------------------------ | :------------------------ | :---------------------------------------------------------------------- |
-|  1  | **Home / Beranda**     | `/`                       | `home`                    | Halaman beranda portal akademis                                         |
-|  2  | **Profil Mahasiswa**   | `/mahasiswa/{nrp}`        | `mahasiswa.detail`        | Parameter **Wajib** dengan Validasi Regex (10 Digit NRP)                |
-|  3  | **Agentic AI Sandbox** | `/agent/{tema?}`          | `agent`                   | Parameter **Opsional** dengan fallback tema default                     |
-|  4  | **Kalkulator IPK**     | `/hitung-ipk/{ip1}/{ip2}` | `hitung.ipk`              | Menghitung rata-rata IPK & predikat kelulusan                           |
-|  5  | **Dashboard Grouping** | `/dashboard/*`            | `dashboard.*`             | Route Prefix Grouping (`/dashboard`, `/dashboard/mahasiswa/{nrp}`, dll) |
-|  6  | **Fallback 404**       | `*`                       | `fallback`                | Menangani halaman tidak ditemukan dengan tampilan HTTP 404 khusus       |
+### Rute Wajib Tugas 4 (Multi-View)
+
+| No  | Halaman                  | URL Path            | Method | Controller & Action              | Keterangan                                                                                             |
+| :-: | :----------------------- | :------------------ | :----: | :------------------------------- | :----------------------------------------------------------------------------------------------------- |
+|  1  | **Beranda**              | `/` atau `/beranda` | `GET`  | `PageController@index`           | Halaman beranda utama dengan form interaktif pengubah nama dan kartu GPA dinamis.                      |
+|  2  | **Profil Mahasiswa**     | `/profil-mahasiswa` | `GET`  | `PageController@profilMahasiswa` | Menampilkan data profil akademis mahasiswa menggunakan komponen `<x-info-card>` & `<x-status-banner>`. |
+|  3  | **Ide-Riset Agentic AI** | `/ide-agent`        | `GET`  | `PageController@ideAgent`        | Visualisasi platform _Career Application Agent_ kelompok beserta formulir pengajuan ide agent baru.    |
 
 ---
 
-## Panduan Instalasi & Cara Menjalankan di Lokal
+## Spesifikasi Teknis & Implementasi
 
-Ikuti langkah-langkah di bawah ini untuk menjalankan proyek ini di komputer lokal Anda:
+### 1. Master Layout Terpusat (`layouts/app.blade.php`)
 
-### 1. Prasyarat Sistem
+-   **Pewarisan Bersih**: Seluruh view mewarisi `resources/views/layouts/app.blade.php` via `@extends('layouts.app')` tanpa duplikasi tag `<!DOCTYPE>`, `<html>`, atau `<head>`.
+-   **Title Dinamis**: Menggunakan `@yield('title', '...')` sehingga judul tab browser berubah sesuai konteks halaman.
+-   **Navbar Statis**: Floating pill navbar responsif dengan link navigasi otomatis aktif sesuai rute.
+-   **Container Konten**: Bagian utama halaman dirender melalui `@yield('content')`.
+-   **Footer Resmi**: Menampilkan identitas resmi Departemen Teknik Informatika ITS.
 
-Pastikan perangkat Anda sudah terinstall:
+### 2. Reusable Blade Components
 
--   **PHP** (v8.2 atau yang lebih baru)
+-   **`<x-info-card>`** (`resources/views/components/info-card.blade.php`):  
+    Komponen kartu informasi fleksibel dengan integrasi props (`label`, `title`, `value`, `icon`, `badge`), default slot, dan attribute merging. Digunakan pada halaman `/profil-mahasiswa`.
+-   **`<x-status-banner>`** (`resources/views/components/status-banner.blade.php`):  
+    Komponen banner notifikasi/status alert dengan variasi tema (`success`, `info`, `warning`, `primary`), ikon SVG dinamis, judul, dan isi pesan. Digunakan pada halaman `/`, `/profil-mahasiswa`, dan `/ide-agent`.
+
+### 3. Vite Asset Bundler & Local NPM Dependencies
+
+-   Seluruh asset CSS & JS dikelola melalui package manager **NPM** secara lokal tanpa menggunakan raw CDN (`<link href="https://cdn...">` dihapus total).
+-   Package lokal: `bootstrap` (^5.3) & `bootstrap-icons` (^1.13).
+-   Asset di-bundle melalui Vite pada `resources/views/layouts/app.blade.php`:
+    ```blade
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    ```
+
+---
+
+## 🏆 Penyelesaian Tantangan
+
+### 🌓 Tantangan 1: Toggle Tema Dinamis (`/ide-agent?mode=dark`)
+
+-   Menggunakan variabel Blade/PHP `$darkMode = request('mode') === 'dark';`.
+-   Mengakses `/ide-agent` akan menampilkan **Light Mode** standar.
+-   Mengakses `/ide-agent?mode=dark` (atau mengklik tombol toggle **Mode Dark**) akan otomatis mengaktifkan styling tema gelap (_dark mode_) yang kontras, elegan, dan nyaman dibaca.
+
+### Tantangan 2: Alert Status Interaktif & Dynamic GPA (`/beranda?user=Andi`)
+
+-   Menerima parameter query string `user`, contoh: `/beranda?user=Andi`.
+-   Disediakan **Formulir Simulasi Status Pengguna** interaktif di halaman Beranda.
+-   Ketika pengguna menginputkan nama dan mengirim formulir:
+    1. Muncul notifikasi `<x-status-banner>` bertipe success menyambut pengguna secara dinamis:  
+       _"Selamat datang, {nama}! IPK Anda pada kartu di atas otomatis dihitung..."_.
+    2. Nama pada kartu GPA di Hero section otomatis berubah menjadi nama yang dimasukkan.
+    3. Nilai IPK di kartu di-generate secara acak antara **3.50 s/d 4.00**, lengkap dengan pembaruan progress bar dan predikat kelulusan (_Dengan Pujian_ atau _Sangat Memuaskan_).
+
+---
+
+## 🛠️ Panduan Instalasi & Menjalankan di Lokal
+
+### 1. Prasyarat
+
+-   **PHP** $\ge$ 8.2
 -   **Composer**
--   **Git**
+-   **Node.js** & **NPM**
 
-### 2. Clone Repository
-
-Buka terminal / Command Prompt / PowerShell, lalu jalankan:
+### 2. Instalasi Dependency
 
 ```bash
-git clone https://github.com/Kifrx/tugas1-pbkk.git
-cd tugas1-pbkk
-```
+# 1. Clone repository
+git clone https://github.com/Kifrx/PBKK-W4.git
+cd PBKK-W4
 
-### 3. Install Dependency Laravel
-
-Jalankan composer untuk mengunduh semua paket dependency:
-
-```bash
+# 2. Install dependensi PHP
 composer install
+
+# 3. Install dependensi NPM & bundle asset Vite
+npm install
+npm run build
 ```
 
-### 4. Salin File Konfigurasi Environment (`.env`)
-
-Salin file `.env.example` menjadi `.env`:
-
--   **Windows (PowerShell):**
-    ```powershell
-    copy .env.example .env
-    ```
--   **Linux / macOS / Git Bash:**
-    ```bash
-    cp .env.example .env
-    ```
-
-### 5. Generate Application Key
-
-Buat kunci enkripsi aplikasi Laravel:
+### 3. Konfigurasi Environment
 
 ```bash
+# Salin file environment (Windows PowerShell)
+copy .env.example .env
+
+# Generate application encryption key
 php artisan key:generate
 ```
 
-### 6. Jalankan Local Development Server
-
-Jalankan server lokal Laravel menggunakan Artisan:
+### 4. Menjalankan Server
 
 ```bash
 php artisan serve
 ```
 
-> 💡 **Opsi Tambahan:** Jika Anda tidak ingin fitur auto-reload (atau ingin menggunakan CLI workers):
->
-> ```bash
-> php artisan serve --no-reload
-> ```
-
-### 7. Buka di Browser
-
-Akses aplikasi melalui browser di URL:
-
-```text
-http://127.0.0.1:8000
-```
-
----
-
-## 🧪 Contoh URL Uji Coba
-
-Setelah server berjalan, Anda dapat mencoba URL berikut:
-
--   **Home:** [`http://127.0.0.1:8000/`](http://127.0.0.1:8000/)
--   **Detail Mahasiswa (Valid 10 Digit):** [`http://127.0.0.1:8000/mahasiswa/5025241197`](http://127.0.0.1:8000/mahasiswa/5025241197)
--   **Detail Mahasiswa (Uji Regex - Otomatis 404 jika bukan 10 digit):** [`http://127.0.0.1:8000/mahasiswa/123`](http://127.0.0.1:8000/mahasiswa/123)
--   **Agent AI (Dengan Parameter):** [`http://127.0.0.1:8000/agent/Cybersecurity`](http://127.0.0.1:8000/agent/Cybersecurity)
--   **Agent AI (Tanpa Parameter / Opsional):** [`http://127.0.0.1:8000/agent`](http://127.0.0.1:8000/agent)
--   **Kalkulator IPK:** [`http://127.0.0.1:8000/hitung-ipk/3.95/3.88`](http://127.0.0.1:8000/hitung-ipk/3.95/3.88)
--   **Dashboard Group:** [`http://127.0.0.1:8000/dashboard`](http://127.0.0.1:8000/dashboard)
--   **Testing Fallback 404:** [`http://127.0.0.1:8000/halaman-ngawur`](http://127.0.0.1:8000/halaman-ngawur)
+Aplikasi dapat diakses melalui browser di: **`http://127.0.0.1:8000`**
 
 ---
 
 ## 📁 Struktur Direktori Penting
 
 ```text
-tugas1-pbkk/
+PBKK-W2/
 ├── app/
 │   └── Http/
 │       └── Controllers/
-│           └── PageController.php   # Logika bisnis & pemrosesan rute
+│           └── PageController.php           # 1 Controller untuk seluruh rute
 ├── resources/
+│   ├── css/
+│   │   └── app.css                          # Impor lokal bootstrap & icons
+│   ├── js/
+│   │   ├── app.js                           # Impor lokal bootstrap bundle JS
+│   │   └── bootstrap.js
 │   └── views/
+│       ├── components/                      # Reusable Blade Components
+│       │   ├── info-card.blade.php          # <x-info-card>
+│       │   └── status-banner.blade.php      # <x-status-banner>
 │       ├── layouts/
-│       │   └── app.blade.php        # Layout utama (Header, Nav, Footer)
-│       ├── home.blade.php           # Tampilan Beranda
-│       ├── mahasiswa.blade.php      # Tampilan Profil Mahasiswa
-│       ├── project.blade.php        # Tampilan Agentic AI Sandbox
-│       ├── ipk.blade.php            # Tampilan Kalkulator IPK
-│       └── fallback.blade.php       # Tampilan Halaman 404
+│       │   └── app.blade.php                # Master layout terpusat (@extends)
+│       ├── home.blade.php                   # Rute / dan /beranda
+│       ├── mahasiswa.blade.php              # Rute /profil-mahasiswa & /mahasiswa/{nrp}
+│       ├── project.blade.php                # Rute /ide-agent & /agent/{tema?}
+│       ├── ipk.blade.php                    # Rute /hitung-ipk/{ip1}/{ip2}
+│       └── fallback.blade.php               # Halaman error 404
 ├── routes/
-│   └── web.php                      # Pendaftaran Rute Aplikasi
-└── README.md                        # Dokumentasi Proyek
+│   └── web.php                              # Pendaftaran seluruh rute aplikasi
+├── tests/
+│   └── Feature/
+│       └── Pertemuan4Test.php               # Automated test suite Tugas 4
+├── package.json                             # Dependency NPM lokal (Vite, Bootstrap)
+├── vite.config.js                           # Konfigurasi compiler Vite
+└── README.md
 ```
